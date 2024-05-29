@@ -1,0 +1,40 @@
+struct SharedData {
+    int value1;
+    char message[100];
+};
+
+int main() {
+    int shmid;
+
+    //struct type pointer named s_d
+    struct SharedData *s_d;
+
+
+    
+    shmid = shmget((key_t)101, sizeof(s_d), 0666 | IPC_CREAT);
+
+    //typecasting return value of shmat() into SharedData type pointer
+    s_d = (struct SharedData *)shmat(shmid, NULL, 0);
+    
+    //check for error 
+    if (s_d == (void *)-1) {
+        perror("shmat");
+        exit(EXIT_FAILURE);
+    }
+
+    //Now write data to the shared memory using struct attributes
+    (*s_d).value1 = 123;
+    strcpy((*shared_data).message, "Hello from the first process!");
+
+    //retrieving value from struct in shared memory from another process
+    struct SharedData *new_s_d;
+    new_shmid = shmget((key_t)101, sizeof(new_s_d), 0666 | IPC_CREAT);
+    new_s_d=(struct SharedData *)shmat(new_shmid,NULL,0);
+
+    char buff[100];
+    recieved_value = (*new_s_d).value1;
+    strcpy(buff, (*shared_data).message);
+
+
+    return 0;
+}
